@@ -9,11 +9,16 @@
 
 
 #include <avr/io.h>
+#include "vars.h"
+#include "ports_ini.h"
 
 int main(void)
 {
+	ports_ini();	//Настройка портов
+	
+	
     while(1)
     {
-        //TODO:: Please write your application code 
+        
     }
 }
