@@ -38,7 +38,8 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../main.c \
-../ports_ini.c
+../ports_ini.c \
+../timers_ini.c
 
 
 PREPROCESSING_SRCS += 
@@ -49,19 +50,23 @@ ASM_SRCS +=
 
 OBJS +=  \
 main.o \
-ports_ini.o
+ports_ini.o \
+timers_ini.o
 
 OBJS_AS_ARGS +=  \
 main.o \
-ports_ini.o
+ports_ini.o \
+timers_ini.o
 
 C_DEPS +=  \
 main.d \
-ports_ini.d
+ports_ini.d \
+timers_ini.d
 
 C_DEPS_AS_ARGS +=  \
 main.d \
-ports_ini.d
+ports_ini.d \
+timers_ini.d
 
 OUTPUT_FILE_PATH +=main.elf
 
@@ -77,6 +82,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

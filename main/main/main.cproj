@@ -105,6 +105,12 @@
     <Compile Include="ports_ini.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="timers_ini.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timers_ini.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="vars.h">
       <SubType>compile</SubType>
     </Compile>
