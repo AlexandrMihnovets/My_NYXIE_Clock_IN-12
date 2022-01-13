@@ -30,3 +30,5 @@ uint8_t numbers[11] = {
 	0b00000011,	//9
 	0b00001111,	//nothing
 };
+
+uint8_t anode = 1;		//for anodes change

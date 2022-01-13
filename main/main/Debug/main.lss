@@ -3,23 +3,23 @@ main.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000000b0  00000000  00000000  00000054  2**1
+  0 .text         000000cc  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .comment      00000030  00000000  00000000  00000104  2**0
+  1 .comment      00000030  00000000  00000000  00000120  2**0
                   CONTENTS, READONLY
-  2 .debug_aranges 00000040  00000000  00000000  00000134  2**0
+  2 .debug_aranges 00000060  00000000  00000000  00000150  2**0
                   CONTENTS, READONLY, DEBUGGING
-  3 .debug_info   0000014b  00000000  00000000  00000174  2**0
+  3 .debug_info   000001fe  00000000  00000000  000001b0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 000000e5  00000000  00000000  000002bf  2**0
+  4 .debug_abbrev 00000136  00000000  00000000  000003ae  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_line   0000019d  00000000  00000000  000003a4  2**0
+  5 .debug_line   00000264  00000000  00000000  000004e4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_frame  00000048  00000000  00000000  00000544  2**2
+  6 .debug_frame  0000006c  00000000  00000000  00000748  2**2
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_str    0000014d  00000000  00000000  0000058c  2**0
+  7 .debug_str    00000179  00000000  00000000  000007b4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_ranges 00000020  00000000  00000000  000006d9  2**0
+  8 .debug_ranges 00000030  00000000  00000000  0000092d  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -57,7 +57,7 @@ Disassembly of section .text:
   32:	10 e0       	ldi	r17, 0x00	; 0
   34:	a0 e6       	ldi	r26, 0x60	; 96
   36:	b0 e0       	ldi	r27, 0x00	; 0
-  38:	e0 eb       	ldi	r30, 0xB0	; 176
+  38:	ec ec       	ldi	r30, 0xCC	; 204
   3a:	f0 e0       	ldi	r31, 0x00	; 0
   3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
   3e:	05 90       	lpm	r0, Z+
@@ -66,130 +66,164 @@ Disassembly of section .text:
   44:	b1 07       	cpc	r27, r17
   46:	d9 f7       	brne	.-10     	; 0x3e <__SP_H__>
   48:	02 d0       	rcall	.+4      	; 0x4e <main>
-  4a:	30 c0       	rjmp	.+96     	; 0xac <_exit>
+  4a:	3e c0       	rjmp	.+124    	; 0xc8 <_exit>
 
 0000004c <__bad_interrupt>:
   4c:	d9 cf       	rjmp	.-78     	; 0x0 <__vectors>
 
 0000004e <main>:
-#include "vars.h"
 #include "ports_ini.h"
+#include "timers_ini.h"
 
 int main(void)
 {
 	ports_ini();	//Настройка портов
-  4e:	01 d0       	rcall	.+2      	; 0x52 <ports_ini>
-  50:	ff cf       	rjmp	.-2      	; 0x50 <main+0x2>
+  4e:	03 d0       	rcall	.+6      	; 0x56 <ports_ini>
+	
+	timers_ini();	//Timers initialisation
+  50:	2f d0       	rcall	.+94     	; 0xb0 <timers_ini>
+	
+	sei();			//Interrupts enable
+  52:	78 94       	sei
+  54:	ff cf       	rjmp	.-2      	; 0x54 <main+0x6>
 
-00000052 <ports_ini>:
+00000056 <ports_ini>:
 #include <avr/io.h>
 
 void ports_ini(void)		//Ports initialization
 {
 	//Port B
 	DDRB |= (1 << PB0);		//T6
-  52:	b8 9a       	sbi	0x17, 0	; 23
+  56:	b8 9a       	sbi	0x17, 0	; 23
 	DDRB &= ~(1 << PB1);	//Button1
-  54:	b9 98       	cbi	0x17, 1	; 23
+  58:	b9 98       	cbi	0x17, 1	; 23
 	DDRB &= ~(1 << PB2);	//Button2
-  56:	ba 98       	cbi	0x17, 2	; 23
+  5a:	ba 98       	cbi	0x17, 2	; 23
 	DDRB &= ~(1 << PB3);	//Button3
-  58:	bb 98       	cbi	0x17, 3	; 23
+  5c:	bb 98       	cbi	0x17, 3	; 23
 	DDRB &= ~(1 << PB4);	//not wsed (only MISO)
-  5a:	bc 98       	cbi	0x17, 4	; 23
+  5e:	bc 98       	cbi	0x17, 4	; 23
 	DDRB &= ~(1 << PB5);	//T_Sens
-  5c:	bd 98       	cbi	0x17, 5	; 23
+  60:	bd 98       	cbi	0x17, 5	; 23
 	DDRB |= (1 << PB6);		//T1
-  5e:	be 9a       	sbi	0x17, 6	; 23
+  62:	be 9a       	sbi	0x17, 6	; 23
 	DDRB |= (1 << PB7);		//T2
-  60:	bf 9a       	sbi	0x17, 7	; 23
+  64:	bf 9a       	sbi	0x17, 7	; 23
 	
 	PORTB &= ~(1 << PB0);	//low
-  62:	c0 98       	cbi	0x18, 0	; 24
+  66:	c0 98       	cbi	0x18, 0	; 24
 	PORTB &= ~(1 << PB1);	//low
-  64:	c1 98       	cbi	0x18, 1	; 24
+  68:	c1 98       	cbi	0x18, 1	; 24
 	PORTB &= ~(1 << PB2);	//low
-  66:	c2 98       	cbi	0x18, 2	; 24
+  6a:	c2 98       	cbi	0x18, 2	; 24
 	PORTB &= ~(1 << PB3);	//low
-  68:	c3 98       	cbi	0x18, 3	; 24
+  6c:	c3 98       	cbi	0x18, 3	; 24
 	PORTB &= ~(1 << PB4);	//low
-  6a:	c4 98       	cbi	0x18, 4	; 24
+  6e:	c4 98       	cbi	0x18, 4	; 24
 	PORTB &= ~(1 << PB5);	//low
-  6c:	c5 98       	cbi	0x18, 5	; 24
+  70:	c5 98       	cbi	0x18, 5	; 24
 	PORTB &= ~(1 << PB6);	//low
-  6e:	c6 98       	cbi	0x18, 6	; 24
+  72:	c6 98       	cbi	0x18, 6	; 24
 	PORTB &= ~(1 << PB7);	//low
-  70:	c7 98       	cbi	0x18, 7	; 24
+  74:	c7 98       	cbi	0x18, 7	; 24
 	
 	//************************************
 	
 	//Port C
 	DDRC |= (1 << PC0);		//Address A
-  72:	a0 9a       	sbi	0x14, 0	; 20
+  76:	a0 9a       	sbi	0x14, 0	; 20
 	DDRC |= (1 << PC1);		//Address D
-  74:	a1 9a       	sbi	0x14, 1	; 20
+  78:	a1 9a       	sbi	0x14, 1	; 20
 	DDRC |= (1 << PC2);		//Address B
-  76:	a2 9a       	sbi	0x14, 2	; 20
+  7a:	a2 9a       	sbi	0x14, 2	; 20
 	DDRC |= (1 << PC3);		//Address C
-  78:	a3 9a       	sbi	0x14, 3	; 20
+  7c:	a3 9a       	sbi	0x14, 3	; 20
 	DDRC |= (1 << PC4);		//DOT1
-  7a:	a4 9a       	sbi	0x14, 4	; 20
+  7e:	a4 9a       	sbi	0x14, 4	; 20
 	DDRC |= (1 << PC5);		//DOT2
-  7c:	a5 9a       	sbi	0x14, 5	; 20
+  80:	a5 9a       	sbi	0x14, 5	; 20
 	
 	PORTC &= ~(1 << PC0);	//low
-  7e:	a8 98       	cbi	0x15, 0	; 21
+  82:	a8 98       	cbi	0x15, 0	; 21
 	PORTC &= ~(1 << PC1);	//low
-  80:	a9 98       	cbi	0x15, 1	; 21
+  84:	a9 98       	cbi	0x15, 1	; 21
 	PORTC &= ~(1 << PC2);	//low
-  82:	aa 98       	cbi	0x15, 2	; 21
+  86:	aa 98       	cbi	0x15, 2	; 21
 	PORTC &= ~(1 << PC3);	//low
-  84:	ab 98       	cbi	0x15, 3	; 21
+  88:	ab 98       	cbi	0x15, 3	; 21
 	PORTC &= ~(1 << PC4);	//low
-  86:	ac 98       	cbi	0x15, 4	; 21
+  8a:	ac 98       	cbi	0x15, 4	; 21
 	PORTC &= ~(1 << PC5);	//low
-  88:	ad 98       	cbi	0x15, 5	; 21
+  8c:	ad 98       	cbi	0x15, 5	; 21
 	
 	//************************************
 	
 	//Port D
 	DDRD &= ~(1 << PD0);	//Rx
-  8a:	88 98       	cbi	0x11, 0	; 17
+  8e:	88 98       	cbi	0x11, 0	; 17
 	DDRD |= (1 << PD1);		//Tx
-  8c:	89 9a       	sbi	0x11, 1	; 17
+  90:	89 9a       	sbi	0x11, 1	; 17
 	DDRD &= ~(1 << PD2);	//SQW
-  8e:	8a 98       	cbi	0x11, 2	; 17
+  92:	8a 98       	cbi	0x11, 2	; 17
 	DDRD &= ~(1 << PD3);	//not used
-  90:	8b 98       	cbi	0x11, 3	; 17
+  94:	8b 98       	cbi	0x11, 3	; 17
 	DDRD |= (1 << PD4);		//LED
-  92:	8c 9a       	sbi	0x11, 4	; 17
+  96:	8c 9a       	sbi	0x11, 4	; 17
 	DDRD |= (1 << PD5);		//T3
-  94:	8d 9a       	sbi	0x11, 5	; 17
+  98:	8d 9a       	sbi	0x11, 5	; 17
 	DDRD |= (1 << PD6);		//T4
-  96:	8e 9a       	sbi	0x11, 6	; 17
+  9a:	8e 9a       	sbi	0x11, 6	; 17
 	DDRD |= (1 << PD7);		//T5
-  98:	8f 9a       	sbi	0x11, 7	; 17
+  9c:	8f 9a       	sbi	0x11, 7	; 17
 	
 	DDRD &= ~(1 << PD0);	//low
-  9a:	88 98       	cbi	0x11, 0	; 17
+  9e:	88 98       	cbi	0x11, 0	; 17
 	DDRD &= ~(1 << PD1);	//low
-  9c:	89 98       	cbi	0x11, 1	; 17
+  a0:	89 98       	cbi	0x11, 1	; 17
 	PORTD &= ~(1 << PD2);	//low
-  9e:	92 98       	cbi	0x12, 2	; 18
+  a2:	92 98       	cbi	0x12, 2	; 18
 	PORTD &= ~(1 << PD3);	//low
-  a0:	93 98       	cbi	0x12, 3	; 18
+  a4:	93 98       	cbi	0x12, 3	; 18
 	PORTD &= ~(1 << PD4);	//low
-  a2:	94 98       	cbi	0x12, 4	; 18
+  a6:	94 98       	cbi	0x12, 4	; 18
 	PORTD &= ~(1 << PD5);	//low
-  a4:	95 98       	cbi	0x12, 5	; 18
+  a8:	95 98       	cbi	0x12, 5	; 18
 	PORTD &= ~(1 << PD6);	//low
-  a6:	96 98       	cbi	0x12, 6	; 18
+  aa:	96 98       	cbi	0x12, 6	; 18
 	PORTD &= ~(1 << PD7);	//low
-  a8:	97 98       	cbi	0x12, 7	; 18
-  aa:	08 95       	ret
+  ac:	97 98       	cbi	0x12, 7	; 18
+  ae:	08 95       	ret
 
-000000ac <_exit>:
-  ac:	f8 94       	cli
+000000b0 <timers_ini>:
+		8		0		1		0
+		64		0		1		1
+		256		1		0		0
+		1024	1		0		1
+	*/
+	TCCR1B |= (1 << CS10);
+  b0:	8e b5       	in	r24, 0x2e	; 46
+  b2:	81 60       	ori	r24, 0x01	; 1
+  b4:	8e bd       	out	0x2e, r24	; 46
+	//TCCR1B |= (1 << CS11);
+	TCCR1B |= (1 << CS12);
+  b6:	8e b5       	in	r24, 0x2e	; 46
+  b8:	84 60       	ori	r24, 0x04	; 4
+  ba:	8e bd       	out	0x2e, r24	; 46
+	
+	//Reset Timer1 register
+	TCNT1 = 0;
+  bc:	1d bc       	out	0x2d, r1	; 45
+  be:	1c bc       	out	0x2c, r1	; 44
+	
+	//Interrupts for Timer1
+	TIMSK |= TOIE1;		//Overflow interrupt enable
+  c0:	89 b7       	in	r24, 0x39	; 57
+  c2:	82 60       	ori	r24, 0x02	; 2
+  c4:	89 bf       	out	0x39, r24	; 57
+  c6:	08 95       	ret
 
-000000ae <__stop_program>:
-  ae:	ff cf       	rjmp	.-2      	; 0xae <__stop_program>
+000000c8 <_exit>:
+  c8:	f8 94       	cli
+
+000000ca <__stop_program>:
+  ca:	ff cf       	rjmp	.-2      	; 0xca <__stop_program>

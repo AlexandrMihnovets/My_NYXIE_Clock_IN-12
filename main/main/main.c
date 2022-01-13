@@ -9,13 +9,18 @@
 
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include "vars.h"
 #include "ports_ini.h"
+#include "timers_ini.h"
 
 int main(void)
 {
 	ports_ini();	//Настройка портов
 	
+	timers_ini();	//Timers initialisation
+	
+	sei();			//Interrupts enable
 	
     while(1)
     {
