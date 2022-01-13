@@ -13,6 +13,7 @@
 #include "vars.h"
 #include "ports_ini.h"
 #include "timers_ini.h"
+#include "functions.h"
 
 int main(void)
 {
@@ -24,6 +25,6 @@ int main(void)
 	
     while(1)
     {
-        
+        decoder();
     }
 }

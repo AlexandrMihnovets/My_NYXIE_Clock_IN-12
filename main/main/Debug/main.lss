@@ -3,25 +3,27 @@ main.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000198  00000000  00000000  00000054  2**1
+  0 .text         00000266  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .comment      00000030  00000000  00000000  000001ec  2**0
+  1 .data         0000000c  00800060  00000266  000002da  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  000002e6  2**0
                   CONTENTS, READONLY
-  2 .debug_aranges 00000060  00000000  00000000  0000021c  2**0
+  3 .debug_aranges 00000068  00000000  00000000  00000316  2**0
                   CONTENTS, READONLY, DEBUGGING
-  3 .debug_info   0000022c  00000000  00000000  0000027c  2**0
+  4 .debug_info   0000024f  00000000  00000000  0000037e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 00000174  00000000  00000000  000004a8  2**0
+  5 .debug_abbrev 0000018e  00000000  00000000  000005cd  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_line   00000283  00000000  00000000  0000061c  2**0
+  6 .debug_line   000002b5  00000000  00000000  0000075b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_frame  0000006c  00000000  00000000  000008a0  2**2
+  7 .debug_frame  0000007c  00000000  00000000  00000a10  2**2
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_str    00000183  00000000  00000000  0000090c  2**0
+  8 .debug_str    0000018b  00000000  00000000  00000a8c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_loc    000000f8  00000000  00000000  00000a8f  2**0
+  9 .debug_loc    000000f8  00000000  00000000  00000c17  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_ranges 00000030  00000000  00000000  00000b87  2**0
+ 10 .debug_ranges 00000038  00000000  00000000  00000d0f  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -59,307 +61,430 @@ Disassembly of section .text:
   32:	10 e0       	ldi	r17, 0x00	; 0
   34:	a0 e6       	ldi	r26, 0x60	; 96
   36:	b0 e0       	ldi	r27, 0x00	; 0
-  38:	e8 e9       	ldi	r30, 0x98	; 152
-  3a:	f1 e0       	ldi	r31, 0x01	; 1
+  38:	e6 e6       	ldi	r30, 0x66	; 102
+  3a:	f2 e0       	ldi	r31, 0x02	; 2
   3c:	02 c0       	rjmp	.+4      	; 0x42 <__SREG__+0x3>
   3e:	05 90       	lpm	r0, Z+
   40:	0d 92       	st	X+, r0
-  42:	a0 36       	cpi	r26, 0x60	; 96
+  42:	ac 36       	cpi	r26, 0x6C	; 108
   44:	b1 07       	cpc	r27, r17
   46:	d9 f7       	brne	.-10     	; 0x3e <__SP_H__>
-  48:	02 d0       	rcall	.+4      	; 0x4e <main>
-  4a:	a4 c0       	rjmp	.+328    	; 0x194 <_exit>
+  48:	68 d0       	rcall	.+208    	; 0x11a <main>
+  4a:	0b c1       	rjmp	.+534    	; 0x262 <_exit>
 
 0000004c <__bad_interrupt>:
   4c:	d9 cf       	rjmp	.-78     	; 0x0 <__vectors>
 
-0000004e <main>:
-#include "ports_ini.h"
+0000004e <decoder>:
+
+#endif /* FUNCTIONS_H_ */
+
+void decoder(void)
+{
+	switch(anode)
+  4e:	80 91 60 00 	lds	r24, 0x0060
+  52:	83 30       	cpi	r24, 0x03	; 3
+  54:	49 f1       	breq	.+82     	; 0xa8 <decoder+0x5a>
+  56:	28 f4       	brcc	.+10     	; 0x62 <decoder+0x14>
+  58:	81 30       	cpi	r24, 0x01	; 1
+  5a:	51 f0       	breq	.+20     	; 0x70 <decoder+0x22>
+  5c:	82 30       	cpi	r24, 0x02	; 2
+  5e:	b1 f0       	breq	.+44     	; 0x8c <decoder+0x3e>
+  60:	5a c0       	rjmp	.+180    	; 0x116 <decoder+0xc8>
+  62:	85 30       	cpi	r24, 0x05	; 5
+  64:	e9 f1       	breq	.+122    	; 0xe0 <decoder+0x92>
+  66:	70 f1       	brcs	.+92     	; 0xc4 <decoder+0x76>
+  68:	86 30       	cpi	r24, 0x06	; 6
+  6a:	09 f4       	brne	.+2      	; 0x6e <decoder+0x20>
+  6c:	47 c0       	rjmp	.+142    	; 0xfc <decoder+0xae>
+  6e:	53 c0       	rjmp	.+166    	; 0x116 <decoder+0xc8>
+	{
+		case 1: PORTC |= (1 << numbers[0]);
+  70:	45 b3       	in	r20, 0x15	; 21
+  72:	21 e0       	ldi	r18, 0x01	; 1
+  74:	30 e0       	ldi	r19, 0x00	; 0
+  76:	c9 01       	movw	r24, r18
+  78:	00 90 61 00 	lds	r0, 0x0061
+  7c:	02 c0       	rjmp	.+4      	; 0x82 <decoder+0x34>
+  7e:	88 0f       	add	r24, r24
+  80:	99 1f       	adc	r25, r25
+  82:	0a 94       	dec	r0
+  84:	e2 f7       	brpl	.-8      	; 0x7e <decoder+0x30>
+  86:	84 2b       	or	r24, r20
+  88:	85 bb       	out	0x15, r24	; 21
+		break;
+  8a:	45 c0       	rjmp	.+138    	; 0x116 <decoder+0xc8>
+		case 2: PORTC |= (1 << numbers[1]);;
+  8c:	45 b3       	in	r20, 0x15	; 21
+  8e:	21 e0       	ldi	r18, 0x01	; 1
+  90:	30 e0       	ldi	r19, 0x00	; 0
+  92:	c9 01       	movw	r24, r18
+  94:	00 90 62 00 	lds	r0, 0x0062
+  98:	02 c0       	rjmp	.+4      	; 0x9e <decoder+0x50>
+  9a:	88 0f       	add	r24, r24
+  9c:	99 1f       	adc	r25, r25
+  9e:	0a 94       	dec	r0
+  a0:	e2 f7       	brpl	.-8      	; 0x9a <decoder+0x4c>
+  a2:	84 2b       	or	r24, r20
+  a4:	85 bb       	out	0x15, r24	; 21
+		break;
+  a6:	37 c0       	rjmp	.+110    	; 0x116 <decoder+0xc8>
+		case 3: PORTC |= (1 << numbers[2]);;
+  a8:	45 b3       	in	r20, 0x15	; 21
+  aa:	21 e0       	ldi	r18, 0x01	; 1
+  ac:	30 e0       	ldi	r19, 0x00	; 0
+  ae:	c9 01       	movw	r24, r18
+  b0:	00 90 63 00 	lds	r0, 0x0063
+  b4:	02 c0       	rjmp	.+4      	; 0xba <decoder+0x6c>
+  b6:	88 0f       	add	r24, r24
+  b8:	99 1f       	adc	r25, r25
+  ba:	0a 94       	dec	r0
+  bc:	e2 f7       	brpl	.-8      	; 0xb6 <decoder+0x68>
+  be:	84 2b       	or	r24, r20
+  c0:	85 bb       	out	0x15, r24	; 21
+		break;
+  c2:	29 c0       	rjmp	.+82     	; 0x116 <decoder+0xc8>
+		case 4: PORTC |= (1 << numbers[3]);;
+  c4:	45 b3       	in	r20, 0x15	; 21
+  c6:	21 e0       	ldi	r18, 0x01	; 1
+  c8:	30 e0       	ldi	r19, 0x00	; 0
+  ca:	c9 01       	movw	r24, r18
+  cc:	00 90 64 00 	lds	r0, 0x0064
+  d0:	02 c0       	rjmp	.+4      	; 0xd6 <decoder+0x88>
+  d2:	88 0f       	add	r24, r24
+  d4:	99 1f       	adc	r25, r25
+  d6:	0a 94       	dec	r0
+  d8:	e2 f7       	brpl	.-8      	; 0xd2 <decoder+0x84>
+  da:	84 2b       	or	r24, r20
+  dc:	85 bb       	out	0x15, r24	; 21
+		break;
+  de:	1b c0       	rjmp	.+54     	; 0x116 <decoder+0xc8>
+		case 5: PORTC |= (1 << numbers[4]);;
+  e0:	45 b3       	in	r20, 0x15	; 21
+  e2:	21 e0       	ldi	r18, 0x01	; 1
+  e4:	30 e0       	ldi	r19, 0x00	; 0
+  e6:	c9 01       	movw	r24, r18
+  e8:	00 90 65 00 	lds	r0, 0x0065
+  ec:	02 c0       	rjmp	.+4      	; 0xf2 <decoder+0xa4>
+  ee:	88 0f       	add	r24, r24
+  f0:	99 1f       	adc	r25, r25
+  f2:	0a 94       	dec	r0
+  f4:	e2 f7       	brpl	.-8      	; 0xee <decoder+0xa0>
+  f6:	84 2b       	or	r24, r20
+  f8:	85 bb       	out	0x15, r24	; 21
+		break;
+  fa:	0d c0       	rjmp	.+26     	; 0x116 <decoder+0xc8>
+		case 6: PORTC |= (1 << numbers[5]);;
+  fc:	45 b3       	in	r20, 0x15	; 21
+  fe:	21 e0       	ldi	r18, 0x01	; 1
+ 100:	30 e0       	ldi	r19, 0x00	; 0
+ 102:	c9 01       	movw	r24, r18
+ 104:	00 90 66 00 	lds	r0, 0x0066
+ 108:	02 c0       	rjmp	.+4      	; 0x10e <decoder+0xc0>
+ 10a:	88 0f       	add	r24, r24
+ 10c:	99 1f       	adc	r25, r25
+ 10e:	0a 94       	dec	r0
+ 110:	e2 f7       	brpl	.-8      	; 0x10a <decoder+0xbc>
+ 112:	84 2b       	or	r24, r20
+ 114:	85 bb       	out	0x15, r24	; 21
+		break;
+	}
+	PORTC &= (~(1 << PB3) | (1 << PB2) | (1 << PB1) | (1 << PB0));	//Обнуляем, чтобы мусор не копился
+ 116:	ab 98       	cbi	0x15, 3	; 21
+ 118:	08 95       	ret
+
+0000011a <main>:
 #include "timers_ini.h"
+#include "functions.h"
 
 int main(void)
 {
 	ports_ini();	//Настройка портов
-  4e:	05 d0       	rcall	.+10     	; 0x5a <ports_ini>
+ 11a:	06 d0       	rcall	.+12     	; 0x128 <ports_ini>
 	
 	timers_ini(1024);	//Timers initialisation
-  50:	80 e0       	ldi	r24, 0x00	; 0
-  52:	94 e0       	ldi	r25, 0x04	; 4
-  54:	2f d0       	rcall	.+94     	; 0xb4 <timers_ini>
+ 11c:	80 e0       	ldi	r24, 0x00	; 0
+ 11e:	94 e0       	ldi	r25, 0x04	; 4
+ 120:	30 d0       	rcall	.+96     	; 0x182 <timers_ini>
 	
 	sei();			//Interrupts enable
-  56:	78 94       	sei
-  58:	ff cf       	rjmp	.-2      	; 0x58 <main+0xa>
+ 122:	78 94       	sei
+	
+    while(1)
+    {
+        decoder();
+ 124:	94 df       	rcall	.-216    	; 0x4e <decoder>
+ 126:	fe cf       	rjmp	.-4      	; 0x124 <main+0xa>
 
-0000005a <ports_ini>:
+00000128 <ports_ini>:
 #include <avr/io.h>
 
 void ports_ini(void)		//Ports initialization
 {
 	//Port B
 	DDRB |= (1 << PB0);		//T6
-  5a:	b8 9a       	sbi	0x17, 0	; 23
+ 128:	b8 9a       	sbi	0x17, 0	; 23
 	DDRB &= ~(1 << PB1);	//Button1
-  5c:	b9 98       	cbi	0x17, 1	; 23
+ 12a:	b9 98       	cbi	0x17, 1	; 23
 	DDRB &= ~(1 << PB2);	//Button2
-  5e:	ba 98       	cbi	0x17, 2	; 23
+ 12c:	ba 98       	cbi	0x17, 2	; 23
 	DDRB &= ~(1 << PB3);	//Button3
-  60:	bb 98       	cbi	0x17, 3	; 23
+ 12e:	bb 98       	cbi	0x17, 3	; 23
 	DDRB &= ~(1 << PB4);	//not wsed (only MISO)
-  62:	bc 98       	cbi	0x17, 4	; 23
+ 130:	bc 98       	cbi	0x17, 4	; 23
 	DDRB &= ~(1 << PB5);	//T_Sens
-  64:	bd 98       	cbi	0x17, 5	; 23
+ 132:	bd 98       	cbi	0x17, 5	; 23
 	DDRB |= (1 << PB6);		//T1
-  66:	be 9a       	sbi	0x17, 6	; 23
+ 134:	be 9a       	sbi	0x17, 6	; 23
 	DDRB |= (1 << PB7);		//T2
-  68:	bf 9a       	sbi	0x17, 7	; 23
+ 136:	bf 9a       	sbi	0x17, 7	; 23
 	
 	PORTB &= ~(1 << PB0);	//low
-  6a:	c0 98       	cbi	0x18, 0	; 24
+ 138:	c0 98       	cbi	0x18, 0	; 24
 	PORTB &= ~(1 << PB1);	//low
-  6c:	c1 98       	cbi	0x18, 1	; 24
+ 13a:	c1 98       	cbi	0x18, 1	; 24
 	PORTB &= ~(1 << PB2);	//low
-  6e:	c2 98       	cbi	0x18, 2	; 24
+ 13c:	c2 98       	cbi	0x18, 2	; 24
 	PORTB &= ~(1 << PB3);	//low
-  70:	c3 98       	cbi	0x18, 3	; 24
+ 13e:	c3 98       	cbi	0x18, 3	; 24
 	PORTB &= ~(1 << PB4);	//low
-  72:	c4 98       	cbi	0x18, 4	; 24
+ 140:	c4 98       	cbi	0x18, 4	; 24
 	PORTB &= ~(1 << PB5);	//low
-  74:	c5 98       	cbi	0x18, 5	; 24
+ 142:	c5 98       	cbi	0x18, 5	; 24
 	PORTB &= ~(1 << PB6);	//low
-  76:	c6 98       	cbi	0x18, 6	; 24
+ 144:	c6 98       	cbi	0x18, 6	; 24
 	PORTB &= ~(1 << PB7);	//low
-  78:	c7 98       	cbi	0x18, 7	; 24
+ 146:	c7 98       	cbi	0x18, 7	; 24
 	
 	//************************************
 	
 	//Port C
 	DDRC |= (1 << PC0);		//Address A
-  7a:	a0 9a       	sbi	0x14, 0	; 20
+ 148:	a0 9a       	sbi	0x14, 0	; 20
 	DDRC |= (1 << PC1);		//Address D
-  7c:	a1 9a       	sbi	0x14, 1	; 20
+ 14a:	a1 9a       	sbi	0x14, 1	; 20
 	DDRC |= (1 << PC2);		//Address B
-  7e:	a2 9a       	sbi	0x14, 2	; 20
+ 14c:	a2 9a       	sbi	0x14, 2	; 20
 	DDRC |= (1 << PC3);		//Address C
-  80:	a3 9a       	sbi	0x14, 3	; 20
+ 14e:	a3 9a       	sbi	0x14, 3	; 20
 	DDRC |= (1 << PC4);		//DOT1
-  82:	a4 9a       	sbi	0x14, 4	; 20
+ 150:	a4 9a       	sbi	0x14, 4	; 20
 	DDRC |= (1 << PC5);		//DOT2
-  84:	a5 9a       	sbi	0x14, 5	; 20
+ 152:	a5 9a       	sbi	0x14, 5	; 20
 	
 	PORTC &= ~(1 << PC0);	//low
-  86:	a8 98       	cbi	0x15, 0	; 21
+ 154:	a8 98       	cbi	0x15, 0	; 21
 	PORTC &= ~(1 << PC1);	//low
-  88:	a9 98       	cbi	0x15, 1	; 21
+ 156:	a9 98       	cbi	0x15, 1	; 21
 	PORTC &= ~(1 << PC2);	//low
-  8a:	aa 98       	cbi	0x15, 2	; 21
+ 158:	aa 98       	cbi	0x15, 2	; 21
 	PORTC &= ~(1 << PC3);	//low
-  8c:	ab 98       	cbi	0x15, 3	; 21
+ 15a:	ab 98       	cbi	0x15, 3	; 21
 	PORTC &= ~(1 << PC4);	//low
-  8e:	ac 98       	cbi	0x15, 4	; 21
+ 15c:	ac 98       	cbi	0x15, 4	; 21
 	PORTC &= ~(1 << PC5);	//low
-  90:	ad 98       	cbi	0x15, 5	; 21
+ 15e:	ad 98       	cbi	0x15, 5	; 21
 	
 	//************************************
 	
 	//Port D
 	DDRD &= ~(1 << PD0);	//Rx
-  92:	88 98       	cbi	0x11, 0	; 17
+ 160:	88 98       	cbi	0x11, 0	; 17
 	DDRD |= (1 << PD1);		//Tx
-  94:	89 9a       	sbi	0x11, 1	; 17
+ 162:	89 9a       	sbi	0x11, 1	; 17
 	DDRD &= ~(1 << PD2);	//SQW
-  96:	8a 98       	cbi	0x11, 2	; 17
+ 164:	8a 98       	cbi	0x11, 2	; 17
 	DDRD &= ~(1 << PD3);	//not used
-  98:	8b 98       	cbi	0x11, 3	; 17
+ 166:	8b 98       	cbi	0x11, 3	; 17
 	DDRD |= (1 << PD4);		//LED
-  9a:	8c 9a       	sbi	0x11, 4	; 17
+ 168:	8c 9a       	sbi	0x11, 4	; 17
 	DDRD |= (1 << PD5);		//T3
-  9c:	8d 9a       	sbi	0x11, 5	; 17
+ 16a:	8d 9a       	sbi	0x11, 5	; 17
 	DDRD |= (1 << PD6);		//T4
-  9e:	8e 9a       	sbi	0x11, 6	; 17
+ 16c:	8e 9a       	sbi	0x11, 6	; 17
 	DDRD |= (1 << PD7);		//T5
-  a0:	8f 9a       	sbi	0x11, 7	; 17
+ 16e:	8f 9a       	sbi	0x11, 7	; 17
 	
 	DDRD &= ~(1 << PD0);	//low
-  a2:	88 98       	cbi	0x11, 0	; 17
+ 170:	88 98       	cbi	0x11, 0	; 17
 	DDRD &= ~(1 << PD1);	//low
-  a4:	89 98       	cbi	0x11, 1	; 17
+ 172:	89 98       	cbi	0x11, 1	; 17
 	PORTD &= ~(1 << PD2);	//low
-  a6:	92 98       	cbi	0x12, 2	; 18
+ 174:	92 98       	cbi	0x12, 2	; 18
 	PORTD &= ~(1 << PD3);	//low
-  a8:	93 98       	cbi	0x12, 3	; 18
+ 176:	93 98       	cbi	0x12, 3	; 18
 	PORTD &= ~(1 << PD4);	//low
-  aa:	94 98       	cbi	0x12, 4	; 18
+ 178:	94 98       	cbi	0x12, 4	; 18
 	PORTD &= ~(1 << PD5);	//low
-  ac:	95 98       	cbi	0x12, 5	; 18
+ 17a:	95 98       	cbi	0x12, 5	; 18
 	PORTD &= ~(1 << PD6);	//low
-  ae:	96 98       	cbi	0x12, 6	; 18
+ 17c:	96 98       	cbi	0x12, 6	; 18
 	PORTD &= ~(1 << PD7);	//low
-  b0:	97 98       	cbi	0x12, 7	; 18
-  b2:	08 95       	ret
+ 17e:	97 98       	cbi	0x12, 7	; 18
+ 180:	08 95       	ret
 
-000000b4 <timers_ini>:
+00000182 <timers_ini>:
 		128		1		0		1
 		256		1		1		0
 		1024	1		1		1
 	*/
 	
 	switch(prescaler)
-  b4:	80 34       	cpi	r24, 0x40	; 64
-  b6:	91 05       	cpc	r25, r1
-  b8:	b9 f1       	breq	.+110    	; 0x128 <timers_ini+0x74>
-  ba:	50 f4       	brcc	.+20     	; 0xd0 <timers_ini+0x1c>
-  bc:	88 30       	cpi	r24, 0x08	; 8
-  be:	91 05       	cpc	r25, r1
-  c0:	f9 f0       	breq	.+62     	; 0x100 <timers_ini+0x4c>
-  c2:	80 32       	cpi	r24, 0x20	; 32
-  c4:	91 05       	cpc	r25, r1
-  c6:	31 f1       	breq	.+76     	; 0x114 <timers_ini+0x60>
-  c8:	01 97       	sbiw	r24, 0x01	; 1
-  ca:	09 f0       	breq	.+2      	; 0xce <timers_ini+0x1a>
-  cc:	55 c0       	rjmp	.+170    	; 0x178 <timers_ini+0xc4>
-  ce:	0e c0       	rjmp	.+28     	; 0xec <timers_ini+0x38>
-  d0:	81 15       	cp	r24, r1
-  d2:	21 e0       	ldi	r18, 0x01	; 1
-  d4:	92 07       	cpc	r25, r18
-  d6:	e1 f1       	breq	.+120    	; 0x150 <timers_ini+0x9c>
-  d8:	81 15       	cp	r24, r1
-  da:	24 e0       	ldi	r18, 0x04	; 4
-  dc:	92 07       	cpc	r25, r18
-  de:	09 f4       	brne	.+2      	; 0xe2 <timers_ini+0x2e>
-  e0:	41 c0       	rjmp	.+130    	; 0x164 <timers_ini+0xb0>
-  e2:	80 38       	cpi	r24, 0x80	; 128
-  e4:	91 05       	cpc	r25, r1
-  e6:	09 f0       	breq	.+2      	; 0xea <timers_ini+0x36>
-  e8:	47 c0       	rjmp	.+142    	; 0x178 <timers_ini+0xc4>
-  ea:	28 c0       	rjmp	.+80     	; 0x13c <timers_ini+0x88>
+ 182:	80 34       	cpi	r24, 0x40	; 64
+ 184:	91 05       	cpc	r25, r1
+ 186:	b9 f1       	breq	.+110    	; 0x1f6 <timers_ini+0x74>
+ 188:	50 f4       	brcc	.+20     	; 0x19e <timers_ini+0x1c>
+ 18a:	88 30       	cpi	r24, 0x08	; 8
+ 18c:	91 05       	cpc	r25, r1
+ 18e:	f9 f0       	breq	.+62     	; 0x1ce <timers_ini+0x4c>
+ 190:	80 32       	cpi	r24, 0x20	; 32
+ 192:	91 05       	cpc	r25, r1
+ 194:	31 f1       	breq	.+76     	; 0x1e2 <timers_ini+0x60>
+ 196:	01 97       	sbiw	r24, 0x01	; 1
+ 198:	09 f0       	breq	.+2      	; 0x19c <timers_ini+0x1a>
+ 19a:	55 c0       	rjmp	.+170    	; 0x246 <timers_ini+0xc4>
+ 19c:	0e c0       	rjmp	.+28     	; 0x1ba <timers_ini+0x38>
+ 19e:	81 15       	cp	r24, r1
+ 1a0:	21 e0       	ldi	r18, 0x01	; 1
+ 1a2:	92 07       	cpc	r25, r18
+ 1a4:	e1 f1       	breq	.+120    	; 0x21e <timers_ini+0x9c>
+ 1a6:	81 15       	cp	r24, r1
+ 1a8:	24 e0       	ldi	r18, 0x04	; 4
+ 1aa:	92 07       	cpc	r25, r18
+ 1ac:	09 f4       	brne	.+2      	; 0x1b0 <timers_ini+0x2e>
+ 1ae:	41 c0       	rjmp	.+130    	; 0x232 <timers_ini+0xb0>
+ 1b0:	80 38       	cpi	r24, 0x80	; 128
+ 1b2:	91 05       	cpc	r25, r1
+ 1b4:	09 f0       	breq	.+2      	; 0x1b8 <timers_ini+0x36>
+ 1b6:	47 c0       	rjmp	.+142    	; 0x246 <timers_ini+0xc4>
+ 1b8:	28 c0       	rjmp	.+80     	; 0x20a <timers_ini+0x88>
 	{
 		case 1:		TCCR2 |= (1 << CS20);
-  ec:	85 b5       	in	r24, 0x25	; 37
-  ee:	81 60       	ori	r24, 0x01	; 1
-  f0:	85 bd       	out	0x25, r24	; 37
+ 1ba:	85 b5       	in	r24, 0x25	; 37
+ 1bc:	81 60       	ori	r24, 0x01	; 1
+ 1be:	85 bd       	out	0x25, r24	; 37
 					TCCR2 &= ~(1 << CS21);
-  f2:	85 b5       	in	r24, 0x25	; 37
-  f4:	8d 7f       	andi	r24, 0xFD	; 253
-  f6:	85 bd       	out	0x25, r24	; 37
+ 1c0:	85 b5       	in	r24, 0x25	; 37
+ 1c2:	8d 7f       	andi	r24, 0xFD	; 253
+ 1c4:	85 bd       	out	0x25, r24	; 37
 					TCCR2 &= ~(1 << CS22);
-  f8:	85 b5       	in	r24, 0x25	; 37
-  fa:	8b 7f       	andi	r24, 0xFB	; 251
-  fc:	85 bd       	out	0x25, r24	; 37
+ 1c6:	85 b5       	in	r24, 0x25	; 37
+ 1c8:	8b 7f       	andi	r24, 0xFB	; 251
+ 1ca:	85 bd       	out	0x25, r24	; 37
 			break;
-  fe:	45 c0       	rjmp	.+138    	; 0x18a <timers_ini+0xd6>
+ 1cc:	45 c0       	rjmp	.+138    	; 0x258 <timers_ini+0xd6>
 		case 8:		TCCR2 &= ~(1 << CS20);
- 100:	85 b5       	in	r24, 0x25	; 37
- 102:	8e 7f       	andi	r24, 0xFE	; 254
- 104:	85 bd       	out	0x25, r24	; 37
+ 1ce:	85 b5       	in	r24, 0x25	; 37
+ 1d0:	8e 7f       	andi	r24, 0xFE	; 254
+ 1d2:	85 bd       	out	0x25, r24	; 37
 					TCCR2 |= (1 << CS21);
- 106:	85 b5       	in	r24, 0x25	; 37
- 108:	82 60       	ori	r24, 0x02	; 2
- 10a:	85 bd       	out	0x25, r24	; 37
+ 1d4:	85 b5       	in	r24, 0x25	; 37
+ 1d6:	82 60       	ori	r24, 0x02	; 2
+ 1d8:	85 bd       	out	0x25, r24	; 37
 					TCCR2 &= ~(1 << CS22);
- 10c:	85 b5       	in	r24, 0x25	; 37
- 10e:	8b 7f       	andi	r24, 0xFB	; 251
- 110:	85 bd       	out	0x25, r24	; 37
+ 1da:	85 b5       	in	r24, 0x25	; 37
+ 1dc:	8b 7f       	andi	r24, 0xFB	; 251
+ 1de:	85 bd       	out	0x25, r24	; 37
 			break;
- 112:	3b c0       	rjmp	.+118    	; 0x18a <timers_ini+0xd6>
+ 1e0:	3b c0       	rjmp	.+118    	; 0x258 <timers_ini+0xd6>
 		case 32:	TCCR2 &= ~(1 << CS20);
- 114:	85 b5       	in	r24, 0x25	; 37
- 116:	8e 7f       	andi	r24, 0xFE	; 254
- 118:	85 bd       	out	0x25, r24	; 37
+ 1e2:	85 b5       	in	r24, 0x25	; 37
+ 1e4:	8e 7f       	andi	r24, 0xFE	; 254
+ 1e6:	85 bd       	out	0x25, r24	; 37
 					TCCR2 |= (1 << CS21);
- 11a:	85 b5       	in	r24, 0x25	; 37
- 11c:	82 60       	ori	r24, 0x02	; 2
- 11e:	85 bd       	out	0x25, r24	; 37
+ 1e8:	85 b5       	in	r24, 0x25	; 37
+ 1ea:	82 60       	ori	r24, 0x02	; 2
+ 1ec:	85 bd       	out	0x25, r24	; 37
 					TCCR2 |= (1 << CS22);
- 120:	85 b5       	in	r24, 0x25	; 37
- 122:	84 60       	ori	r24, 0x04	; 4
- 124:	85 bd       	out	0x25, r24	; 37
+ 1ee:	85 b5       	in	r24, 0x25	; 37
+ 1f0:	84 60       	ori	r24, 0x04	; 4
+ 1f2:	85 bd       	out	0x25, r24	; 37
 			break;
- 126:	31 c0       	rjmp	.+98     	; 0x18a <timers_ini+0xd6>
+ 1f4:	31 c0       	rjmp	.+98     	; 0x258 <timers_ini+0xd6>
 		case 64:	TCCR2 &= ~(1 << CS20);
- 128:	85 b5       	in	r24, 0x25	; 37
- 12a:	8e 7f       	andi	r24, 0xFE	; 254
- 12c:	85 bd       	out	0x25, r24	; 37
+ 1f6:	85 b5       	in	r24, 0x25	; 37
+ 1f8:	8e 7f       	andi	r24, 0xFE	; 254
+ 1fa:	85 bd       	out	0x25, r24	; 37
 					TCCR2 &= ~(1 << CS21);
- 12e:	85 b5       	in	r24, 0x25	; 37
- 130:	8d 7f       	andi	r24, 0xFD	; 253
- 132:	85 bd       	out	0x25, r24	; 37
+ 1fc:	85 b5       	in	r24, 0x25	; 37
+ 1fe:	8d 7f       	andi	r24, 0xFD	; 253
+ 200:	85 bd       	out	0x25, r24	; 37
 					TCCR2 |= (1 << CS22);
- 134:	85 b5       	in	r24, 0x25	; 37
- 136:	84 60       	ori	r24, 0x04	; 4
- 138:	85 bd       	out	0x25, r24	; 37
+ 202:	85 b5       	in	r24, 0x25	; 37
+ 204:	84 60       	ori	r24, 0x04	; 4
+ 206:	85 bd       	out	0x25, r24	; 37
 			break;
- 13a:	27 c0       	rjmp	.+78     	; 0x18a <timers_ini+0xd6>
+ 208:	27 c0       	rjmp	.+78     	; 0x258 <timers_ini+0xd6>
 		case 128:	TCCR2 |= (1 << CS20);
- 13c:	85 b5       	in	r24, 0x25	; 37
- 13e:	81 60       	ori	r24, 0x01	; 1
- 140:	85 bd       	out	0x25, r24	; 37
+ 20a:	85 b5       	in	r24, 0x25	; 37
+ 20c:	81 60       	ori	r24, 0x01	; 1
+ 20e:	85 bd       	out	0x25, r24	; 37
 					TCCR2 &= ~(1 << CS21);
- 142:	85 b5       	in	r24, 0x25	; 37
- 144:	8d 7f       	andi	r24, 0xFD	; 253
- 146:	85 bd       	out	0x25, r24	; 37
+ 210:	85 b5       	in	r24, 0x25	; 37
+ 212:	8d 7f       	andi	r24, 0xFD	; 253
+ 214:	85 bd       	out	0x25, r24	; 37
 					TCCR2 |= (1 << CS22);
- 148:	85 b5       	in	r24, 0x25	; 37
- 14a:	84 60       	ori	r24, 0x04	; 4
- 14c:	85 bd       	out	0x25, r24	; 37
+ 216:	85 b5       	in	r24, 0x25	; 37
+ 218:	84 60       	ori	r24, 0x04	; 4
+ 21a:	85 bd       	out	0x25, r24	; 37
 			break;
- 14e:	1d c0       	rjmp	.+58     	; 0x18a <timers_ini+0xd6>
+ 21c:	1d c0       	rjmp	.+58     	; 0x258 <timers_ini+0xd6>
 		case 256:	TCCR2 &= ~(1 << CS20);
- 150:	85 b5       	in	r24, 0x25	; 37
- 152:	8e 7f       	andi	r24, 0xFE	; 254
- 154:	85 bd       	out	0x25, r24	; 37
+ 21e:	85 b5       	in	r24, 0x25	; 37
+ 220:	8e 7f       	andi	r24, 0xFE	; 254
+ 222:	85 bd       	out	0x25, r24	; 37
 					TCCR2 |= (1 << CS21);
- 156:	85 b5       	in	r24, 0x25	; 37
- 158:	82 60       	ori	r24, 0x02	; 2
- 15a:	85 bd       	out	0x25, r24	; 37
+ 224:	85 b5       	in	r24, 0x25	; 37
+ 226:	82 60       	ori	r24, 0x02	; 2
+ 228:	85 bd       	out	0x25, r24	; 37
 					TCCR2 |= (1 << CS22);
- 15c:	85 b5       	in	r24, 0x25	; 37
- 15e:	84 60       	ori	r24, 0x04	; 4
- 160:	85 bd       	out	0x25, r24	; 37
+ 22a:	85 b5       	in	r24, 0x25	; 37
+ 22c:	84 60       	ori	r24, 0x04	; 4
+ 22e:	85 bd       	out	0x25, r24	; 37
 			break;
- 162:	13 c0       	rjmp	.+38     	; 0x18a <timers_ini+0xd6>
+ 230:	13 c0       	rjmp	.+38     	; 0x258 <timers_ini+0xd6>
 		case 1024:	TCCR2 |= (1 << CS20);
- 164:	85 b5       	in	r24, 0x25	; 37
- 166:	81 60       	ori	r24, 0x01	; 1
- 168:	85 bd       	out	0x25, r24	; 37
+ 232:	85 b5       	in	r24, 0x25	; 37
+ 234:	81 60       	ori	r24, 0x01	; 1
+ 236:	85 bd       	out	0x25, r24	; 37
 					TCCR2 |= (1 << CS21);
- 16a:	85 b5       	in	r24, 0x25	; 37
- 16c:	82 60       	ori	r24, 0x02	; 2
- 16e:	85 bd       	out	0x25, r24	; 37
+ 238:	85 b5       	in	r24, 0x25	; 37
+ 23a:	82 60       	ori	r24, 0x02	; 2
+ 23c:	85 bd       	out	0x25, r24	; 37
 					TCCR2 |= (1 << CS22);
- 170:	85 b5       	in	r24, 0x25	; 37
- 172:	84 60       	ori	r24, 0x04	; 4
- 174:	85 bd       	out	0x25, r24	; 37
+ 23e:	85 b5       	in	r24, 0x25	; 37
+ 240:	84 60       	ori	r24, 0x04	; 4
+ 242:	85 bd       	out	0x25, r24	; 37
 			break;
- 176:	09 c0       	rjmp	.+18     	; 0x18a <timers_ini+0xd6>
+ 244:	09 c0       	rjmp	.+18     	; 0x258 <timers_ini+0xd6>
 		default:	TCCR2 |= (1 << CS20);	//По умолчанию \1024
- 178:	85 b5       	in	r24, 0x25	; 37
- 17a:	81 60       	ori	r24, 0x01	; 1
- 17c:	85 bd       	out	0x25, r24	; 37
+ 246:	85 b5       	in	r24, 0x25	; 37
+ 248:	81 60       	ori	r24, 0x01	; 1
+ 24a:	85 bd       	out	0x25, r24	; 37
 					TCCR2 |= (1 << CS21);
- 17e:	85 b5       	in	r24, 0x25	; 37
- 180:	82 60       	ori	r24, 0x02	; 2
- 182:	85 bd       	out	0x25, r24	; 37
+ 24c:	85 b5       	in	r24, 0x25	; 37
+ 24e:	82 60       	ori	r24, 0x02	; 2
+ 250:	85 bd       	out	0x25, r24	; 37
 					TCCR2 |= (1 << CS22);
- 184:	85 b5       	in	r24, 0x25	; 37
- 186:	84 60       	ori	r24, 0x04	; 4
- 188:	85 bd       	out	0x25, r24	; 37
+ 252:	85 b5       	in	r24, 0x25	; 37
+ 254:	84 60       	ori	r24, 0x04	; 4
+ 256:	85 bd       	out	0x25, r24	; 37
 	}
 	
 	
 	//Reset Timer2 register
 	TCNT2 = 0;
- 18a:	14 bc       	out	0x24, r1	; 36
+ 258:	14 bc       	out	0x24, r1	; 36
 	
 	//Interrupts for Timer1
 	TIMSK |= TOIE2;		//Overflow interrupt enable
- 18c:	89 b7       	in	r24, 0x39	; 57
- 18e:	86 60       	ori	r24, 0x06	; 6
- 190:	89 bf       	out	0x39, r24	; 57
- 192:	08 95       	ret
+ 25a:	89 b7       	in	r24, 0x39	; 57
+ 25c:	86 60       	ori	r24, 0x06	; 6
+ 25e:	89 bf       	out	0x39, r24	; 57
+ 260:	08 95       	ret
 
-00000194 <_exit>:
- 194:	f8 94       	cli
+00000262 <_exit>:
+ 262:	f8 94       	cli
 
-00000196 <__stop_program>:
- 196:	ff cf       	rjmp	.-2      	; 0x196 <__stop_program>
+00000264 <__stop_program>:
+ 264:	ff cf       	rjmp	.-2      	; 0x264 <__stop_program>
