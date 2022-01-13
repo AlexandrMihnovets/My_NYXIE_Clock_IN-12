@@ -15,4 +15,4 @@
 
 #endif /* TIMERS_INI_H_ */
 
-void timers_ini(void);
+void timers_ini(uint16_t prescaler);

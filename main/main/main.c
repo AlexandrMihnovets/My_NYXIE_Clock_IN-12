@@ -18,7 +18,7 @@ int main(void)
 {
 	ports_ini();	//Настройка портов
 	
-	timers_ini();	//Timers initialisation
+	timers_ini(1024);	//Timers initialisation
 	
 	sei();			//Interrupts enable
 	
