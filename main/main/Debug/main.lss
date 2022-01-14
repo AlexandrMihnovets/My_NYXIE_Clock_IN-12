@@ -194,8 +194,8 @@ void decoder(void)
  118:	08 95       	ret
 
 0000011a <main>:
-#include "timers_ini.h"
-#include "functions.h"
+
+#include "all_include.h"
 
 int main(void)
 {

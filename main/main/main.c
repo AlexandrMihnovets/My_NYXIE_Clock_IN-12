@@ -8,12 +8,7 @@
  */ 
 
 
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include "vars.h"
-#include "ports_ini.h"
-#include "timers_ini.h"
-#include "functions.h"
+#include "all_include.h"
 
 int main(void)
 {
