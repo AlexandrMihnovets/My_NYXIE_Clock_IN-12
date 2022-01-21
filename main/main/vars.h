@@ -32,3 +32,10 @@ uint8_t numbers[11] = {
 };
 
 uint8_t anode = 1;		//for anodes change
+
+uint8_t hours_high   = 0;
+uint8_t hours_low    = 0;
+uint8_t minutes_high = 0;
+uint8_t minutes_low  = 0;
+uint8_t seconds_high = 0;
+uint8_t seconds_low  = 0;

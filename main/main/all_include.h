@@ -11,6 +11,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include "vars.h"
 #include "ports_ini.h"
 #include "timers_ini.h"
